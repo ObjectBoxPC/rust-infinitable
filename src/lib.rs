@@ -8,8 +8,8 @@ pub enum Infinitable<T> {
 
 impl<T> Infinitable<T> {
 	pub fn is_finite(&self) -> bool {
-		match *self {
-			Infinitable::Finite(_) => true,
+		match self {
+			&Infinitable::Finite(_) => true,
 			_ => false,
 		}
 	}
