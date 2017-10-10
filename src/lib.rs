@@ -28,6 +28,28 @@ impl<T> Infinitable<T> {
 			_ => false,
 		}
 	}
+
+	/// Convert from an `Infinitable<T>` to an `Option<T>`.
+	///
+	/// Converts `self` into an `Option<T>` possibly containing a finite value,
+	/// consuming `self`.
+	///
+	/// # Examples
+	///
+	/// ```
+	/// use infinitable::Infinitable;
+	///
+	/// let finite = Infinitable::Finite(5);
+	/// assert_eq!(Some(5), finite.finite());
+	/// let infinite: Infinitable<i32> = Infinitable::Infinity;
+	/// assert_eq!(None, infinite.finite());
+	/// ```
+	pub fn finite(self) -> Option<T> {
+		match self {
+			Infinitable::Finite(x) => Some(x),
+			_ => None,
+		}
+	}
 }
 
 impl<T> PartialEq for Infinitable<T> where T: PartialEq {

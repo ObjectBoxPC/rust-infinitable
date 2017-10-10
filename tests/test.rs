@@ -86,3 +86,11 @@ fn negative_infinity_less_than_all() {
 	assert!(INF > NEGINF);
 	assert!(INF >= NEGINF);
 }
+
+#[test]
+fn can_convert_to_finite() {
+	assert_eq!(None, NEGINF.finite());
+	assert_eq!(None, INF.finite());
+	assert_eq!(Some(0), ZERO.finite());
+	assert_eq!(Some(1), ONE.finite());
+}
