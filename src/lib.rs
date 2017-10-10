@@ -1,12 +1,26 @@
 use std::cmp::Ordering;
 
+/// An "infinitable" value, one that can be either finite or infinite
 pub enum Infinitable<T> {
+	/// A finite value `T`
 	Finite(T),
+	/// Positive infinity, which compares greater than all finite values
 	Infinity,
+	/// Negative infinity, which compares less than all finite values
 	NegativeInfinity,
 }
 
 impl<T> Infinitable<T> {
+	/// Returns `true` if the value is `Finite`.
+	///
+	/// # Examples
+	///
+	/// ```
+	/// use infinitable::Infinitable;
+	///
+	/// let finite = Infinitable::Finite(5);
+	/// assert!(finite.is_finite());
+	/// ```
 	pub fn is_finite(&self) -> bool {
 		match self {
 			&Infinitable::Finite(_) => true,
