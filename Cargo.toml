@@ -1,6 +1,6 @@
 [package]
 name = "infinitable"
-version = "1.0.1"
+version = "1.1.0"
 authors = ["Philip Chung <philipchung1995@yahoo.com>"]
 description = "Infinity for types without infinite values"
 repository = "https://github.com/philipchungtech/rust-infinitable"
