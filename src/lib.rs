@@ -1,3 +1,25 @@
+//! Infinity for types without infinite values
+//!
+//! Infinitable introduces the notion of "infinity" and "negative infinity"
+//! to numeric types, such as integers, that do not have infinite values.
+//!
+//! A representation of infinity is useful for graph algorithms such as
+//! Dijkstra's algorithm, as well as for representing a graph with an
+//! adjacency matrix.
+//!
+//! # Basic Usage
+//!
+//! ```
+//! use infinitable::Infinitable;
+//!
+//! let finite = Infinitable::Finite(5);
+//! let infinity = Infinitable::Infinity;
+//! let negative_infinity = Infinitable::NegativeInfinity;
+//!
+//! assert!(finite < infinity);
+//! assert!(finite > negative_infinity);
+//! ```
+
 use std::cmp::Ordering;
 
 /// An "infinitable" value, one that can be either finite or infinite
