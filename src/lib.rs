@@ -1,6 +1,7 @@
 use std::cmp::Ordering;
 
 /// An "infinitable" value, one that can be either finite or infinite
+#[derive(Debug)]
 pub enum Infinitable<T> {
 	/// A finite value `T`
 	Finite(T),
