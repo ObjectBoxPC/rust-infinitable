@@ -51,7 +51,7 @@ impl<T> Infinitable<T> {
 		}
 	}
 
-	/// Convert from an `Infinitable<T>` to an `Option<T>`.
+	/// Converts from an `Infinitable<T>` to an `Option<T>`.
 	///
 	/// Converts `self` into an `Option<T>` possibly containing a finite value,
 	/// consuming `self`.
