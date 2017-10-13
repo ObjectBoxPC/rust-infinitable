@@ -21,6 +21,8 @@
 //! ```
 
 use std::cmp::Ordering;
+use std::fmt;
+use std::fmt::{Display,Formatter};
 
 /// An "infinitable" value, one that can be either finite or infinite
 #[derive(Debug, Copy, Clone)]
@@ -116,6 +118,16 @@ impl<T> Ord for Infinitable<T> where T: Ord {
 				=> x.cmp(y),
 			(..)
 				=> self.partial_cmp(other).unwrap(),
+		}
+	}
+}
+
+impl<T> Display for Infinitable<T> where T: Display {
+	fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+		match self {
+			&Infinitable::Finite(ref x) => write!(f, "{}", x),
+			&Infinitable::Infinity => write!(f, "inf"),
+			&Infinitable::NegativeInfinity => write!(f, "-inf"),
 		}
 	}
 }

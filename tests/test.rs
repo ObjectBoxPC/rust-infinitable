@@ -94,3 +94,11 @@ fn can_convert_to_finite() {
 	assert_eq!(Some(0), ZERO.finite());
 	assert_eq!(Some(1), ONE.finite());
 }
+
+#[test]
+fn can_format_display() {
+	assert_eq!("-inf", format!("{}", NEGINF));
+	assert_eq!("inf", format!("{}", INF));
+	assert_eq!("0", format!("{}", ZERO));
+	assert_eq!("1", format!("{}", ONE));
+}
