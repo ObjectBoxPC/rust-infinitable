@@ -102,3 +102,11 @@ fn can_format_display() {
 	assert_eq!("0", format!("{}", ZERO));
 	assert_eq!("1", format!("{}", ONE));
 }
+
+#[test]
+fn can_negate() {
+	assert_eq!(ZERO, -ZERO);
+	assert_eq!(Infinitable::Finite(-1), -ONE);
+	assert_eq!(NEGINF, -INF);
+	assert_eq!(INF, -NEGINF);
+}

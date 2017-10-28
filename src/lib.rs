@@ -21,6 +21,7 @@
 //! ```
 
 use std::cmp::Ordering;
+use std::ops::Neg;
 use std::fmt;
 use std::fmt::{Display,Formatter};
 
@@ -118,6 +119,18 @@ impl<T> Ord for Infinitable<T> where T: Ord {
 				=> x.cmp(y),
 			(..)
 				=> self.partial_cmp(other).unwrap(),
+		}
+	}
+}
+
+impl<T> Neg for Infinitable<T> where T: Neg {
+	type Output = Infinitable<T::Output>;
+
+	fn neg(self) -> Infinitable<T::Output> {
+		match self {
+			Infinitable::Finite(x) => Infinitable::Finite(-x),
+			Infinitable::Infinity => Infinitable::NegativeInfinity,
+			Infinitable::NegativeInfinity => Infinitable::Infinity,
 		}
 	}
 }
