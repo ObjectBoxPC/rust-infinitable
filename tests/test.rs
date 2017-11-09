@@ -94,3 +94,27 @@ fn can_convert_to_finite() {
 	assert_eq!(Some(0), ZERO.finite());
 	assert_eq!(Some(1), ONE.finite());
 }
+
+#[test]
+fn can_format_display() {
+	assert_eq!("-inf", format!("{}", NEGINF));
+	assert_eq!("inf", format!("{}", INF));
+	assert_eq!("0", format!("{}", ZERO));
+	assert_eq!("1", format!("{}", ONE));
+}
+
+#[test]
+fn can_negate() {
+	assert_eq!(ZERO, -ZERO);
+	assert_eq!(Infinitable::Finite(-1), -ONE);
+	assert_eq!(NEGINF, -INF);
+	assert_eq!(INF, -NEGINF);
+}
+
+#[test]
+fn can_convert_from_value() {
+	assert_eq!(ZERO, Infinitable::from(0));
+	assert_eq!(ONE, Infinitable::from(1));
+	assert_eq!(ZERO, From::from(0));
+	assert_eq!(ONE, From::from(1));
+}

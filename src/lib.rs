@@ -21,9 +21,12 @@
 //! ```
 
 use std::cmp::Ordering;
+use std::ops::Neg;
+use std::fmt;
+use std::fmt::{Display,Formatter};
 
 /// An "infinitable" value, one that can be either finite or infinite
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum Infinitable<T> {
 	/// A finite value `T`
 	Finite(T),
@@ -51,7 +54,7 @@ impl<T> Infinitable<T> {
 		}
 	}
 
-	/// Convert from an `Infinitable<T>` to an `Option<T>`.
+	/// Converts from an `Infinitable<T>` to an `Option<T>`.
 	///
 	/// Converts `self` into an `Option<T>` possibly containing a finite value,
 	/// consuming `self`.
@@ -71,6 +74,12 @@ impl<T> Infinitable<T> {
 			Infinitable::Finite(x) => Some(x),
 			_ => None,
 		}
+	}
+}
+
+impl<T> From<T> for Infinitable<T> {
+	fn from(value: T) -> Infinitable<T> {
+		Infinitable::Finite(value)
 	}
 }
 
@@ -116,6 +125,28 @@ impl<T> Ord for Infinitable<T> where T: Ord {
 				=> x.cmp(y),
 			(..)
 				=> self.partial_cmp(other).unwrap(),
+		}
+	}
+}
+
+impl<T> Neg for Infinitable<T> where T: Neg {
+	type Output = Infinitable<T::Output>;
+
+	fn neg(self) -> Infinitable<T::Output> {
+		match self {
+			Infinitable::Finite(x) => Infinitable::Finite(-x),
+			Infinitable::Infinity => Infinitable::NegativeInfinity,
+			Infinitable::NegativeInfinity => Infinitable::Infinity,
+		}
+	}
+}
+
+impl<T> Display for Infinitable<T> where T: Display {
+	fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+		match self {
+			&Infinitable::Finite(ref x) => write!(f, "{}", x),
+			&Infinitable::Infinity => write!(f, "inf"),
+			&Infinitable::NegativeInfinity => write!(f, "-inf"),
 		}
 	}
 }
