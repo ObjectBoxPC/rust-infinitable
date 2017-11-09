@@ -110,3 +110,11 @@ fn can_negate() {
 	assert_eq!(NEGINF, -INF);
 	assert_eq!(INF, -NEGINF);
 }
+
+#[test]
+fn can_convert_from_value() {
+	assert_eq!(ZERO, Infinitable::from(0));
+	assert_eq!(ONE, Infinitable::from(1));
+	assert_eq!(ZERO, From::from(0));
+	assert_eq!(ONE, From::from(1));
+}

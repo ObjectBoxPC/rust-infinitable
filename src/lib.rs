@@ -77,6 +77,12 @@ impl<T> Infinitable<T> {
 	}
 }
 
+impl<T> From<T> for Infinitable<T> {
+	fn from(value: T) -> Infinitable<T> {
+		Infinitable::Finite(value)
+	}
+}
+
 impl<T> PartialEq for Infinitable<T> where T: PartialEq {
 	fn eq(&self, other: &Self) -> bool {
 		match (self, other) {
