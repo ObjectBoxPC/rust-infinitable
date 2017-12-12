@@ -26,7 +26,7 @@ use std::fmt;
 use std::fmt::{Display,Formatter};
 
 /// An "infinitable" value, one that can be either finite or infinite
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Infinitable<T> {
 	/// A finite value `T`
 	Finite(T),
@@ -81,23 +81,6 @@ impl<T> From<T> for Infinitable<T> {
 	fn from(value: T) -> Infinitable<T> {
 		Infinitable::Finite(value)
 	}
-}
-
-impl<T> PartialEq for Infinitable<T> where T: PartialEq {
-	fn eq(&self, other: &Self) -> bool {
-		match (self, other) {
-			(&Infinitable::Infinity, &Infinitable::Infinity)
-			| (&Infinitable::NegativeInfinity, &Infinitable::NegativeInfinity)
-				=> true,
-			(&Infinitable::Finite(ref x), &Infinitable::Finite(ref y))
-				=> x == y,
-			(..)
-				=> false,
-		}
-	}
-}
-
-impl<T> Eq for Infinitable<T> where T: Eq {
 }
 
 impl<T> PartialOrd for Infinitable<T> where T: PartialOrd {
