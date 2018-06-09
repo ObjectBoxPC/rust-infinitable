@@ -10,11 +10,11 @@
 //! # Basic Usage
 //!
 //! ```
-//! use infinitable::Infinitable;
+//! use infinitable::*;
 //!
-//! let finite = Infinitable::Finite(5);
-//! let infinity = Infinitable::Infinity;
-//! let negative_infinity = Infinitable::NegativeInfinity;
+//! let finite = Finite(5);
+//! let infinity = Infinity;
+//! let negative_infinity = NegativeInfinity;
 //!
 //! assert!(finite < infinity);
 //! assert!(finite > negative_infinity);
@@ -36,20 +36,22 @@ pub enum Infinitable<T> {
 	NegativeInfinity,
 }
 
+pub use Infinitable::{Finite,Infinity,NegativeInfinity};
+
 impl<T> Infinitable<T> {
 	/// Returns `true` if the value is `Finite`.
 	///
 	/// # Examples
 	///
 	/// ```
-	/// use infinitable::Infinitable;
+	/// use infinitable::Finite;
 	///
-	/// let finite = Infinitable::Finite(5);
+	/// let finite = Finite(5);
 	/// assert!(finite.is_finite());
 	/// ```
 	pub fn is_finite(&self) -> bool {
 		match self {
-			&Infinitable::Finite(_) => true,
+			&Finite(_) => true,
 			_ => false,
 		}
 	}
@@ -62,16 +64,16 @@ impl<T> Infinitable<T> {
 	/// # Examples
 	///
 	/// ```
-	/// use infinitable::Infinitable;
+	/// use infinitable::*;
 	///
-	/// let finite = Infinitable::Finite(5);
+	/// let finite = Finite(5);
 	/// assert_eq!(Some(5), finite.finite());
-	/// let infinite: Infinitable<i32> = Infinitable::Infinity;
+	/// let infinite: Infinitable<i32> = Infinity;
 	/// assert_eq!(None, infinite.finite());
 	/// ```
 	pub fn finite(self) -> Option<T> {
 		match self {
-			Infinitable::Finite(x) => Some(x),
+			Finite(x) => Some(x),
 			_ => None,
 		}
 	}
@@ -79,24 +81,18 @@ impl<T> Infinitable<T> {
 
 impl<T> From<T> for Infinitable<T> {
 	fn from(value: T) -> Infinitable<T> {
-		Infinitable::Finite(value)
+		Finite(value)
 	}
 }
 
 impl<T> PartialOrd for Infinitable<T> where T: PartialOrd {
 	fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 		match (self, other) {
-			(&Infinitable::Infinity, &Infinitable::Infinity)
-			| (&Infinitable::NegativeInfinity, &Infinitable::NegativeInfinity)
+			(&Infinity, &Infinity) | (&NegativeInfinity, &NegativeInfinity)
 				=> Some(Ordering::Equal),
-			(&Infinitable::Infinity, _)
-			| (_, &Infinitable::NegativeInfinity)
-				=> Some(Ordering::Greater),
-			(&Infinitable::NegativeInfinity, _)
-			| (_, &Infinitable::Infinity)
-				=> Some(Ordering::Less),
-			(&Infinitable::Finite(ref x), &Infinitable::Finite(ref y))
-				=> x.partial_cmp(y),
+			(&Infinity, _) | (_, &NegativeInfinity) => Some(Ordering::Greater),
+			(&NegativeInfinity, _) | (_, &Infinity) => Some(Ordering::Less),
+			(&Finite(ref x), &Finite(ref y)) => x.partial_cmp(y),
 		}
 	}
 }
@@ -104,10 +100,8 @@ impl<T> PartialOrd for Infinitable<T> where T: PartialOrd {
 impl<T> Ord for Infinitable<T> where T: Ord {
 	fn cmp(&self, other: &Self) -> Ordering {
 		match (self, other) {
-			(&Infinitable::Finite(ref x), &Infinitable::Finite(ref y))
-				=> x.cmp(y),
-			(..)
-				=> self.partial_cmp(other).unwrap(),
+			(&Finite(ref x), &Finite(ref y)) => x.cmp(y),
+			(..) => self.partial_cmp(other).unwrap(),
 		}
 	}
 }
@@ -117,9 +111,9 @@ impl<T> Neg for Infinitable<T> where T: Neg {
 
 	fn neg(self) -> Infinitable<T::Output> {
 		match self {
-			Infinitable::Finite(x) => Infinitable::Finite(-x),
-			Infinitable::Infinity => Infinitable::NegativeInfinity,
-			Infinitable::NegativeInfinity => Infinitable::Infinity,
+			Finite(x) => Finite(-x),
+			Infinity => NegativeInfinity,
+			NegativeInfinity => Infinity,
 		}
 	}
 }
@@ -127,9 +121,9 @@ impl<T> Neg for Infinitable<T> where T: Neg {
 impl<T> Display for Infinitable<T> where T: Display {
 	fn fmt(&self, f: &mut Formatter) -> fmt::Result {
 		match self {
-			&Infinitable::Finite(ref x) => write!(f, "{}", x),
-			&Infinitable::Infinity => write!(f, "inf"),
-			&Infinitable::NegativeInfinity => write!(f, "-inf"),
+			&Finite(ref x) => write!(f, "{}", x),
+			&Infinity => write!(f, "inf"),
+			&NegativeInfinity => write!(f, "-inf"),
 		}
 	}
 }
