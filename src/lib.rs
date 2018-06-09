@@ -26,7 +26,7 @@ use std::fmt;
 use std::fmt::{Display,Formatter};
 
 /// An "infinitable" value, one that can be either finite or infinite
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Infinitable<T> {
 	/// A finite value `T`
 	Finite(T),
