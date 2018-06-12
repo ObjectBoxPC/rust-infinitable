@@ -118,3 +118,13 @@ fn can_convert_from_value() {
 	assert_eq!(ZERO, From::from(0));
 	assert_eq!(ONE, From::from(1));
 }
+
+#[test]
+fn can_convert_from_option() {
+	assert_eq!(ZERO, Infinitable::finite_or_infinity(Some(0)));
+	assert_eq!(ONE, Infinitable::finite_or_infinity(Some(1)));
+	assert_eq!(INF, Infinitable::finite_or_infinity(None));
+	assert_eq!(ZERO, Infinitable::finite_or_negative_infinity(Some(0)));
+	assert_eq!(ONE, Infinitable::finite_or_negative_infinity(Some(1)));
+	assert_eq!(NEGINF, Infinitable::finite_or_negative_infinity(None));
+}

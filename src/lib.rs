@@ -77,6 +77,50 @@ impl<T> Infinitable<T> {
 			_ => None,
 		}
 	}
+
+	/// Converts from an `Option<T>` to either `Finite` or `Infinity`.
+	///
+	/// Converts an `Option<T>` to an `Infinitable<T>`. `Some(T)` is converted
+	/// to `Finite(T)`, and `None` is converted to `Infinity`.
+	///
+	/// # Examples
+	///
+	/// ```
+	/// use infinitable::*;
+	///
+	/// let finite = Finite(5);
+	/// assert_eq!(finite, Infinitable::finite_or_infinity(Some(5)));
+	/// let infinite: Infinitable<i32> = Infinity;
+	/// assert_eq!(infinite, Infinitable::finite_or_infinity(None));
+	/// ```
+	pub fn finite_or_infinity(option: Option<T>) -> Infinitable<T> {
+		match option {
+			Some(x) => Finite(x),
+			None => Infinity,
+		}
+	}
+
+	/// Converts from an `Option<T>` to either `Finite` or `NegativeInfinity`.
+	///
+	/// Converts an `Option<T>` to an `Infinitable<T>`. `Some(T)` is converted
+	/// to `Finite(T)`, and `None` is converted to `NegativeInfinity`.
+	///
+	/// # Examples
+	///
+	/// ```
+	/// use infinitable::*;
+	///
+	/// let finite = Finite(5);
+	/// assert_eq!(finite, Infinitable::finite_or_negative_infinity(Some(5)));
+	/// let infinite: Infinitable<i32> = NegativeInfinity;
+	/// assert_eq!(infinite, Infinitable::finite_or_negative_infinity(None));
+	/// ```
+	pub fn finite_or_negative_infinity(option: Option<T>) -> Infinitable<T> {
+		match option {
+			Some(x) => Finite(x),
+			None => NegativeInfinity,
+		}
+	}
 }
 
 impl<T> From<T> for Infinitable<T> {
