@@ -1,20 +1,20 @@
 extern crate infinitable;
-use infinitable::Infinitable;
+use infinitable::*;
 
-const NEGINF: Infinitable<i32> = Infinitable::NegativeInfinity;
-const INF: Infinitable<i32> = Infinitable::Infinity;
-const ZERO: Infinitable<i32> = Infinitable::Finite(0);
-const ONE: Infinitable<i32> = Infinitable::Finite(1);
+const NEGINF: Infinitable<i32> = NegativeInfinity;
+const INF: Infinitable<i32> = Infinity;
+const ZERO: Infinitable<i32> = Finite(0);
+const ONE: Infinitable<i32> = Finite(1);
 
 #[test]
 fn can_extract_finite_value() {
-	if let Infinitable::Finite(x) = ZERO {
+	if let Finite(x) = ZERO {
 		assert_eq!(0, x);
 	} else {
 		assert!(false, "Not finite?");
 	}
 
-	if let Infinitable::Finite(x) = ONE {
+	if let Finite(x) = ONE {
 		assert_eq!(1, x);
 	} else {
 		assert!(false, "Not finite?");
@@ -106,7 +106,7 @@ fn can_format_display() {
 #[test]
 fn can_negate() {
 	assert_eq!(ZERO, -ZERO);
-	assert_eq!(Infinitable::Finite(-1), -ONE);
+	assert_eq!(Finite(-1), -ONE);
 	assert_eq!(NEGINF, -INF);
 	assert_eq!(INF, -NEGINF);
 }
@@ -117,4 +117,14 @@ fn can_convert_from_value() {
 	assert_eq!(ONE, Infinitable::from(1));
 	assert_eq!(ZERO, From::from(0));
 	assert_eq!(ONE, From::from(1));
+}
+
+#[test]
+fn can_convert_from_option() {
+	assert_eq!(ZERO, Infinitable::finite_or_infinity(Some(0)));
+	assert_eq!(ONE, Infinitable::finite_or_infinity(Some(1)));
+	assert_eq!(INF, Infinitable::finite_or_infinity(None));
+	assert_eq!(ZERO, Infinitable::finite_or_negative_infinity(Some(0)));
+	assert_eq!(ONE, Infinitable::finite_or_negative_infinity(Some(1)));
+	assert_eq!(NEGINF, Infinitable::finite_or_negative_infinity(None));
 }
