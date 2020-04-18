@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0
+
+* The variants of `Infinitable` are now re-exported, so you can type `Finite(x)` instead of `Infinitable::Finite(x)`.
+* The `Infinitable` type now implements the `Hash` trait.
+
 ## 1.2.0
 
 * Negation operator is now supported.
