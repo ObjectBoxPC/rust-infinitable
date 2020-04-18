@@ -131,22 +131,38 @@ impl<T> From<T> for Infinitable<T> {
 
 impl<T> PartialOrd for Infinitable<T> where T: PartialOrd {
 	fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-		match (self, other) {
-			(&Infinity, &Infinity) | (&NegativeInfinity, &NegativeInfinity)
-				=> Some(Ordering::Equal),
-			(&Infinity, _) | (_, &NegativeInfinity) => Some(Ordering::Greater),
-			(&NegativeInfinity, _) | (_, &Infinity) => Some(Ordering::Less),
-			(&Finite(ref x), &Finite(ref y)) => x.partial_cmp(y),
+		match cmp_initial(self, other) {
+			CmpInitialResult::Infinite(o) => Some(o),
+			CmpInitialResult::Finite(x, y) => x.partial_cmp(y),
 		}
 	}
 }
 
 impl<T> Ord for Infinitable<T> where T: Ord {
 	fn cmp(&self, other: &Self) -> Ordering {
-		match (self, other) {
-			(&Finite(ref x), &Finite(ref y)) => x.cmp(y),
-			(..) => self.partial_cmp(other).unwrap(),
+		match cmp_initial(self, other) {
+			CmpInitialResult::Infinite(o) => o,
+			CmpInitialResult::Finite(x, y) => x.cmp(y),
 		}
+	}
+}
+
+enum CmpInitialResult<'a, T> {
+	Infinite(Ordering),
+	Finite(&'a T, &'a T),
+}
+
+fn cmp_initial<'a, T>(x: &'a Infinitable<T>, y: &'a Infinitable<T>)
+	-> CmpInitialResult<'a, T> {
+	match (x, y) {
+		(&Infinity, &Infinity) | (&NegativeInfinity, &NegativeInfinity)
+			=> CmpInitialResult::Infinite(Ordering::Equal),
+		(&Infinity, _) | (_, &NegativeInfinity)
+			=> CmpInitialResult::Infinite(Ordering::Greater),
+		(&NegativeInfinity, _) | (_, &Infinity)
+			=> CmpInitialResult::Infinite(Ordering::Less),
+		(&Finite(ref xf), &Finite(ref yf))
+			=> CmpInitialResult::Finite(xf, yf),
 	}
 }
 
