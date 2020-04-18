@@ -3,6 +3,7 @@
 ## 1.3.0
 
 * The variants of `Infinitable` are now re-exported, so you can type `Finite(x)` instead of `Infinitable::Finite(x)`.
+* The `finite_or_infinity()` and `finite_or_negative_infinity()` methods are added to convert from an optional finite value to an infinitable.
 * The `Infinitable` type now implements the `Hash` trait.
 
 ## 1.2.0
