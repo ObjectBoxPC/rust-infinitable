@@ -49,6 +49,10 @@ fn finite_values_compare_normally() {
 fn infinities_equality() {
 	assert!(INF == INF);
 	assert!(NEGINF == NEGINF);
+	assert!(INF <= INF);
+	assert!(NEGINF <= NEGINF);
+	assert!(INF >= INF);
+	assert!(NEGINF >= NEGINF);
 	assert!(!(INF != INF));
 	assert!(!(NEGINF != NEGINF));
 
