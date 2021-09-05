@@ -73,6 +73,15 @@ fn infinity_greater_than_all() {
 	assert!(ONE <= INF);
 	assert!(NEGINF < INF);
 	assert!(NEGINF <= INF);
+
+	assert!(!(INF < ONE));
+	assert!(!(INF <= ONE));
+	assert!(!(INF < NEGINF));
+	assert!(!(INF <= NEGINF));
+	assert!(!(ONE > INF));
+	assert!(!(ONE >= INF));
+	assert!(!(NEGINF > INF));
+	assert!(!(NEGINF >= INF));
 }
 
 #[test]
@@ -85,6 +94,15 @@ fn negative_infinity_less_than_all() {
 	assert!(ZERO >= NEGINF);
 	assert!(INF > NEGINF);
 	assert!(INF >= NEGINF);
+
+	assert!(!(NEGINF > ZERO));
+	assert!(!(NEGINF >= ZERO));
+	assert!(!(NEGINF > INF));
+	assert!(!(NEGINF >= INF));
+	assert!(!(ZERO < NEGINF));
+	assert!(!(ZERO <= NEGINF));
+	assert!(!(INF < NEGINF));
+	assert!(!(INF <= NEGINF));
 }
 
 #[test]
