@@ -51,7 +51,7 @@ impl<T> Infinitable<T> {
     /// ```
     pub fn is_finite(&self) -> bool {
         match self {
-            &Finite(_) => true,
+            Finite(_) => true,
             _ => false,
         }
     }
@@ -160,12 +160,12 @@ enum CmpInitialResult<'a, T> {
 
 fn cmp_initial<'a, T>(x: &'a Infinitable<T>, y: &'a Infinitable<T>) -> CmpInitialResult<'a, T> {
     match (x, y) {
-        (&Infinity, &Infinity) | (&NegativeInfinity, &NegativeInfinity) => {
+        (Infinity, Infinity) | (NegativeInfinity, NegativeInfinity) => {
             CmpInitialResult::Infinite(Ordering::Equal)
         }
-        (&Infinity, _) | (_, &NegativeInfinity) => CmpInitialResult::Infinite(Ordering::Greater),
-        (&NegativeInfinity, _) | (_, &Infinity) => CmpInitialResult::Infinite(Ordering::Less),
-        (&Finite(ref xf), &Finite(ref yf)) => CmpInitialResult::Finite(xf, yf),
+        (Infinity, _) | (_, NegativeInfinity) => CmpInitialResult::Infinite(Ordering::Greater),
+        (NegativeInfinity, _) | (_, Infinity) => CmpInitialResult::Infinite(Ordering::Less),
+        (Finite(xf), Finite(yf)) => CmpInitialResult::Finite(xf, yf),
     }
 }
 
@@ -190,9 +190,9 @@ where
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
-            &Finite(ref x) => write!(f, "{}", x),
-            &Infinity => write!(f, "inf"),
-            &NegativeInfinity => write!(f, "-inf"),
+            Finite(x) => write!(f, "{}", x),
+            Infinity => write!(f, "inf"),
+            NegativeInfinity => write!(f, "-inf"),
         }
     }
 }
