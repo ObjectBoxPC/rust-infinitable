@@ -20,10 +20,15 @@
 //! assert!(finite > negative_infinity);
 //! ```
 
-use std::cmp::Ordering;
-use std::fmt;
-use std::fmt::{Display, Formatter};
-use std::ops::Neg;
+#![cfg_attr(not(test), no_std)]
+
+#[cfg(test)]
+extern crate core;
+
+use core::cmp::Ordering;
+use core::fmt;
+use core::fmt::{Display, Formatter};
+use core::ops::Neg;
 
 /// An "infinitable" value, one that can be either finite or infinite
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
