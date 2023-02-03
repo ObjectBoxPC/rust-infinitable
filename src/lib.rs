@@ -31,6 +31,10 @@ use core::fmt::{Display, Formatter};
 use core::ops::Neg;
 
 /// An "infinitable" value, one that can be either finite or infinite
+///
+/// # Versioning
+///
+/// Available since 1.0.0. Variants are re-exported since 1.3.0.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Infinitable<T> {
     /// A finite value `T`
@@ -54,6 +58,10 @@ impl<T> Infinitable<T> {
     /// let finite = Finite(5);
     /// assert!(finite.is_finite());
     /// ```
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.0.0.
     pub fn is_finite(&self) -> bool {
         match self {
             Finite(_) => true,
@@ -76,6 +84,10 @@ impl<T> Infinitable<T> {
     /// let infinite: Infinitable<i32> = Infinity;
     /// assert_eq!(None, infinite.finite());
     /// ```
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.1.0.
     pub fn finite(self) -> Option<T> {
         match self {
             Finite(x) => Some(x),
@@ -98,6 +110,10 @@ impl<T> Infinitable<T> {
     /// let infinite: Infinitable<i32> = Infinity;
     /// assert_eq!(infinite, Infinitable::finite_or_infinity(None));
     /// ```
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.3.0.
     pub fn finite_or_infinity(option: Option<T>) -> Infinitable<T> {
         match option {
             Some(x) => Finite(x),
@@ -120,6 +136,10 @@ impl<T> Infinitable<T> {
     /// let infinite: Infinitable<i32> = NegativeInfinity;
     /// assert_eq!(infinite, Infinitable::finite_or_negative_infinity(None));
     /// ```
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.3.0.
     pub fn finite_or_negative_infinity(option: Option<T>) -> Infinitable<T> {
         match option {
             Some(x) => Finite(x),
