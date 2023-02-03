@@ -53,10 +53,12 @@ impl<T> Infinitable<T> {
     /// # Examples
     ///
     /// ```
-    /// use infinitable::Finite;
+    /// use infinitable::*;
     ///
     /// let finite = Finite(5);
     /// assert!(finite.is_finite());
+    /// let infinite: Infinitable<i32> = Infinity;
+    /// assert!(!infinite.is_finite());
     /// ```
     ///
     /// # Versioning
