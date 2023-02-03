@@ -39,9 +39,9 @@ use core::ops::Neg;
 pub enum Infinitable<T> {
     /// A finite value `T`
     Finite(T),
-    /// Positive infinity, which compares greater than all finite values
+    /// Positive infinity, which compares greater than all other values
     Infinity,
-    /// Negative infinity, which compares less than all finite values
+    /// Negative infinity, which compares less than all other values
     NegativeInfinity,
 }
 
