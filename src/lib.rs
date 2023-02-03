@@ -64,6 +64,7 @@ impl<T> Infinitable<T> {
     /// # Versioning
     ///
     /// Available since 1.0.0.
+    #[must_use]
     pub fn is_finite(&self) -> bool {
         match self {
             Finite(_) => true,
@@ -90,6 +91,7 @@ impl<T> Infinitable<T> {
     /// # Versioning
     ///
     /// Available since 1.1.0.
+    #[must_use]
     pub fn finite(self) -> Option<T> {
         match self {
             Finite(x) => Some(x),
@@ -116,6 +118,7 @@ impl<T> Infinitable<T> {
     /// # Versioning
     ///
     /// Available since 1.3.0.
+    #[must_use]
     pub fn finite_or_infinity(option: Option<T>) -> Infinitable<T> {
         match option {
             Some(x) => Finite(x),
@@ -142,6 +145,7 @@ impl<T> Infinitable<T> {
     /// # Versioning
     ///
     /// Available since 1.3.0.
+    #[must_use]
     pub fn finite_or_negative_infinity(option: Option<T>) -> Infinitable<T> {
         match option {
             Some(x) => Finite(x),
