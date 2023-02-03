@@ -48,7 +48,7 @@ pub enum Infinitable<T> {
 pub use Infinitable::{Finite, Infinity, NegativeInfinity};
 
 impl<T> Infinitable<T> {
-    /// Returns `true` if the value is `Finite`.
+    /// Returns `true` if the value is [`Finite`].
     ///
     /// # Examples
     ///
@@ -72,10 +72,10 @@ impl<T> Infinitable<T> {
         }
     }
 
-    /// Converts from an `Infinitable<T>` to an `Option<T>`.
+    /// Converts from an `Infinitable<T>` to an [`Option<T>`].
     ///
-    /// Converts `self` into an `Option<T>` possibly containing a finite value,
-    /// consuming `self`.
+    /// Converts `self` into an [`Option<T>`] possibly containing
+    /// a finite value, consuming `self`.
     ///
     /// # Examples
     ///
@@ -99,10 +99,10 @@ impl<T> Infinitable<T> {
         }
     }
 
-    /// Converts from an `Option<T>` to either `Finite` or `Infinity`.
+    /// Converts from [`Option<T>`] to [`Finite`] or [`Infinity`].
     ///
-    /// Converts an `Option<T>` to an `Infinitable<T>`. `Some(T)` is converted
-    /// to `Finite(T)`, and `None` is converted to `Infinity`.
+    /// <code>[Some]\(T)</code> is converted to <code>[Finite]\(T)</code>,
+    /// and [`None`] is converted to [`Infinity`].
     ///
     /// # Examples
     ///
@@ -126,10 +126,10 @@ impl<T> Infinitable<T> {
         }
     }
 
-    /// Converts from an `Option<T>` to either `Finite` or `NegativeInfinity`.
+    /// Converts from [`Option<T>`] to [`Finite`] or [`NegativeInfinity`].
     ///
-    /// Converts an `Option<T>` to an `Infinitable<T>`. `Some(T)` is converted
-    /// to `Finite(T)`, and `None` is converted to `NegativeInfinity`.
+    /// <code>[Some]\(T)</code> is converted to <code>[Finite]\(T)</code>,
+    /// and [`None`] is converted to [`NegativeInfinity`].
     ///
     /// # Examples
     ///
@@ -155,7 +155,7 @@ impl<T> Infinitable<T> {
 }
 
 impl<T> From<T> for Infinitable<T> {
-    /// Converts from a value `T` to `Finite` containing the underlying value.
+    /// Converts from a value `T` to [`Finite`] containing the underlying value.
     ///
     /// # Examples
     ///
@@ -181,8 +181,8 @@ impl<T> From<T> for Infinitable<T> {
 
 /// Partial order, where the underlying type `T` implements a partial order.
 ///
-/// `NegativeInfinity` compares less than all other values,
-/// and `Infinity` compares greater than all other values.
+/// [`NegativeInfinity`] compares less than all other values,
+/// and [`Infinity`] compares greater than all other values.
 ///
 /// # Examples
 ///
@@ -215,8 +215,8 @@ where
 
 /// Total order, where the underlying type `T` implements a total order.
 ///
-/// `NegativeInfinity` compares less than all other values,
-/// and `Infinity` compares greater than all other values.
+/// [`NegativeInfinity`] compares less than all other values,
+/// and [`Infinity`] compares greater than all other values.
 ///
 /// # Examples
 ///
@@ -271,8 +271,8 @@ where
 
     /// Negates the value, when the underlying type `T` supports negation.
     ///
-    /// `Infinity` is negated to `NegativeInfinity` (and vice versa),
-    /// and `Finite` is negated based on the underlying value.
+    /// [`Infinity`] is negated to [`NegativeInfinity`] (and vice versa),
+    /// and [`Finite`] is negated based on the underlying value.
     ///
     /// # Examples
     ///
@@ -305,8 +305,8 @@ where
 {
     /// Formats the value, where the underlying type `T` supports formatting.
     ///
-    /// `Infinity` is formatted to `"inf"`, `NegativeInfinity` is formatted to
-    /// `"-inf"`, and `Finite` is formatted based on the underlying value.
+    /// [`Infinity`] is formatted to `"inf"`, [`NegativeInfinity`] is formatted
+    /// to `"-inf"`, and [`Finite`] is formatted based on the underlying value.
     ///
     /// # Examples
     ///
