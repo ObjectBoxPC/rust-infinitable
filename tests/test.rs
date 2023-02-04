@@ -126,6 +126,55 @@ fn can_format_display() {
 }
 
 #[test]
+fn can_add() {
+    assert_eq!(ONE, ONE + ZERO);
+    assert_eq!(ONE, ZERO + ONE);
+    assert_eq!(Finite(2), ONE + ONE);
+    assert_eq!(INF, ONE + INF);
+    assert_eq!(INF, INF + ONE);
+    assert_eq!(INF, INF + INF);
+    assert_eq!(NEGINF, ONE + NEGINF);
+    assert_eq!(NEGINF, NEGINF + ONE);
+    assert_eq!(NEGINF, NEGINF + NEGINF);
+}
+
+#[test]
+#[should_panic(expected = "Cannot add infinity and negative infinity")]
+fn cannot_add_inf_and_neginf() {
+    let _ = INF + NEGINF;
+}
+
+#[test]
+#[should_panic(expected = "Cannot add infinity and negative infinity")]
+fn cannot_add_neginf_and_inf() {
+    let _ = NEGINF + INF;
+}
+
+#[test]
+fn can_subtract() {
+    assert_eq!(ONE, ONE - ZERO);
+    assert_eq!(ZERO, ONE - ONE);
+    assert_eq!(INF, INF - ONE);
+    assert_eq!(INF, ONE - NEGINF);
+    assert_eq!(INF, INF - NEGINF);
+    assert_eq!(NEGINF, NEGINF - ONE);
+    assert_eq!(NEGINF, ONE - INF);
+    assert_eq!(NEGINF, NEGINF - INF);
+}
+
+#[test]
+#[should_panic(expected = "Cannot subtract infinite value from itself")]
+fn cannot_subtract_inf_from_self() {
+    let _ = INF - INF;
+}
+
+#[test]
+#[should_panic(expected = "Cannot subtract infinite value from itself")]
+fn cannot_subtract_neginf_from_self() {
+    let _ = NEGINF - NEGINF;
+}
+
+#[test]
 fn can_negate() {
     assert_eq!(ZERO, -ZERO);
     assert_eq!(Finite(-1), -ONE);

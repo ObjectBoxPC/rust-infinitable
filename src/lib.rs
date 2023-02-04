@@ -28,7 +28,7 @@ extern crate core;
 use core::cmp::Ordering;
 use core::fmt;
 use core::fmt::{Display, Formatter};
-use core::ops::Neg;
+use core::ops::{Add, Neg, Sub};
 
 /// An "infinitable" value, one that can be either finite or infinite
 ///
@@ -260,6 +260,122 @@ fn cmp_initial<'a, T>(x: &'a Infinitable<T>, y: &'a Infinitable<T>) -> CmpInitia
         (Infinity, _) | (_, NegativeInfinity) => CmpInitialResult::Infinite(Ordering::Greater),
         (NegativeInfinity, _) | (_, Infinity) => CmpInitialResult::Infinite(Ordering::Less),
         (Finite(xf), Finite(yf)) => CmpInitialResult::Finite(xf, yf),
+    }
+}
+
+impl<T> Add for Infinitable<T>
+where
+    T: Add,
+{
+    type Output = Infinitable<T::Output>;
+
+    /// Adds two values.
+    ///
+    /// The addition operation follows these rules:
+    ///
+    /// | self               | rhs                | result                |
+    /// |--------------------|--------------------|-----------------------|
+    /// | `Finite`           | `Finite`           | `Finite` (add values) |
+    /// | `Finite`           | `Infinity`         | `Infinity`            |
+    /// | `Finite`           | `NegativeInfinity` | `NegativeInfinity`    |
+    /// | `Infinity`         | `Finite`           | `Infinity`            |
+    /// | `Infinity`         | `Infinity`         | `Infinity`            |
+    /// | `Infinity`         | `NegativeInfinity` | Undefined (panic)     |
+    /// | `NegativeInfinity` | `Finite`           | `NegativeInfinity`    |
+    /// | `NegativeInfinity` | `Infinity`         | Undefined (panic)     |
+    /// | `NegativeInfinity` | `NegativeInfinity` | `NegativeInfinity`    |
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use infinitable::*;
+    ///
+    /// assert_eq!(Finite(5), Finite(2) + Finite(3));
+    /// assert_eq!(Infinity, Finite(1) + Infinity);
+    /// assert_eq!(NegativeInfinity, NegativeInfinity + Finite(1));
+    /// ```
+    ///
+    /// The addition operation panics with `Infinity` and `NegativeInfinity`:
+    ///
+    /// ```should_panic
+    /// use infinitable::*;
+    ///
+    /// let infinity: Infinitable<i32> = Infinity;
+    /// let negative_infinity: Infinitable<i32> = NegativeInfinity;
+    /// let _ = infinity + negative_infinity;
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// Panics if the operands consist of `Infinity` and `NegativeInfinity`.
+    fn add(self, rhs: Infinitable<T>) -> Infinitable<T::Output> {
+        match (self, rhs) {
+            (Infinity, NegativeInfinity) | (NegativeInfinity, Infinity) => {
+                panic!("Cannot add infinity and negative infinity")
+            }
+            (Finite(lf), Finite(rf)) => Finite(lf.add(rf)),
+            (Infinity, _) | (_, Infinity) => Infinity,
+            (NegativeInfinity, _) | (_, NegativeInfinity) => NegativeInfinity,
+        }
+    }
+}
+
+impl<T> Sub for Infinitable<T>
+where
+    T: Sub,
+{
+    type Output = Infinitable<T::Output>;
+
+    /// Subtracts two values.
+    ///
+    /// The subtraction operation follows these rules:
+    ///
+    /// | self               | rhs                | result                     |
+    /// |--------------------|--------------------|----------------------------|
+    /// | `Finite`           | `Finite`           | `Finite` (subtract values) |
+    /// | `Finite`           | `Infinity`         | `NegativeInfinity`         |
+    /// | `Finite`           | `NegativeInfinity` | `Infinity`                 |
+    /// | `Infinity`         | `Finite`           | `Infinity`                 |
+    /// | `Infinity`         | `Infinity`         | Undefined (panic)          |
+    /// | `Infinity`         | `NegativeInfinity` | `Infinity`                 |
+    /// | `NegativeInfinity` | `Finite`           | `NegativeInfinity`         |
+    /// | `NegativeInfinity` | `Infinity`         | `NegativeInfinity`         |
+    /// | `NegativeInfinity` | `NegativeInfinity` | Undefined (panic)          |
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use infinitable::*;
+    ///
+    /// assert_eq!(Finite(3), Finite(5) - Finite(2));
+    /// assert_eq!(Infinity, Infinity - Finite(1));
+    /// assert_eq!(Infinity, Finite(1) - NegativeInfinity);
+    /// assert_eq!(NegativeInfinity, NegativeInfinity - Finite(1));
+    /// assert_eq!(NegativeInfinity, Finite(1) - Infinity);
+    /// ```
+    ///
+    /// The subraction operation panics when an infinite value is subtracted
+    /// from itself:
+    ///
+    /// ```should_panic
+    /// use infinitable::*;
+    ///
+    /// let infinity: Infinitable<i32> = Infinity;
+    /// let _ = infinity - infinity;
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// Panics if the operands are both `Infinity` or both `NegativeInfinity`.
+    fn sub(self, rhs: Infinitable<T>) -> Infinitable<T::Output> {
+        match (self, rhs) {
+            (Infinity, Infinity) | (NegativeInfinity, NegativeInfinity) => {
+                panic!("Cannot subtract infinite value from itself")
+            }
+            (Finite(lf), Finite(rf)) => Finite(lf.sub(rf)),
+            (Infinity, _) | (_, NegativeInfinity) => Infinity,
+            (NegativeInfinity, _) | (_, Infinity) => NegativeInfinity,
+        }
     }
 }
 
