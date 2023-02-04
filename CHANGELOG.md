@@ -1,8 +1,14 @@
 # Changelog
 
+## 1.4.0
+
+* This library now references `core` instead of `std` so it can be used without the full standard library.
+* Additional documentation is added.
+
 ## 1.3.0
 
 * The variants of `Infinitable` are now re-exported, so you can type `Finite(x)` instead of `Infinitable::Finite(x)`.
+* The `finite_or_infinity()` and `finite_or_negative_infinity()` methods are added to convert from an optional finite value to an infinitable. (Note: This item is missing from the changelog included in the release.)
 * The `Infinitable` type now implements the `Hash` trait.
 
 ## 1.2.0
