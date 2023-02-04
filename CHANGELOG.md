@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+
+* This library now references `core` instead of `std` so it can be used without the full standard library.
+* Additional documentation is added.
+
 ## 1.3.0
 
 * The variants of `Infinitable` are now re-exported, so you can type `Finite(x)` instead of `Infinitable::Finite(x)`.
