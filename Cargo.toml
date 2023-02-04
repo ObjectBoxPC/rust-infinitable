@@ -6,5 +6,7 @@ description = "Infinity for types without infinite values"
 repository = "https://github.com/ObjectBoxPC/rust-infinitable"
 readme = "README.md"
 license = "BSD-2-Clause"
+keywords = ["infinity", "mathematics"]
+categories = ["mathematics", "no-std"]
 
 [dependencies]
