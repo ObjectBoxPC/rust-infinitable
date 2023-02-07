@@ -332,3 +332,49 @@ where
         }
     }
 }
+
+/// Converts from [`f32`] value to an optional [`Infinitable<f32>`],
+/// accounting for floating-point infinities and NaN.
+///
+/// The value is converted as follows:
+///
+/// | value             | result                                   |
+/// |-------------------|------------------------------------------|
+/// | Finite value `x`  | <code>[Some]\([Finite]\(x))</code>       |
+/// | Positive infinity | <code>[Some]\([Infinity])</code>         |
+/// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
+/// | NaN               | [`None`]                                 |
+pub fn from_f32(value: f32) -> Option<Infinitable<f32>> {
+    if value.is_finite() {
+        Some(Finite(value))
+    } else if value.is_nan() {
+        None
+    } else if value.is_sign_positive() {
+        Some(Infinity)
+    } else {
+        Some(NegativeInfinity)
+    }
+}
+
+/// Converts from [`f64`] value to an optional [`Infinitable<f64>`],
+/// accounting for floating-point infinities and NaN.
+///
+/// The value is converted as follows:
+///
+/// | value             | result                                   |
+/// |-------------------|------------------------------------------|
+/// | Finite value `x`  | <code>[Some]\([Finite]\(x))</code>       |
+/// | Positive infinity | <code>[Some]\([Infinity])</code>         |
+/// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
+/// | NaN               | [`None`]                                 |
+pub fn from_f64(value: f64) -> Option<Infinitable<f64>> {
+    if value.is_finite() {
+        Some(Finite(value))
+    } else if value.is_nan() {
+        None
+    } else if value.is_sign_positive() {
+        Some(Infinity)
+    } else {
+        Some(NegativeInfinity)
+    }
+}

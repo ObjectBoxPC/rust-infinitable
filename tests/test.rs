@@ -150,3 +150,15 @@ fn can_convert_from_option() {
     assert_eq!(ONE, Infinitable::finite_or_negative_infinity(Some(1)));
     assert_eq!(NEGINF, Infinitable::finite_or_negative_infinity(None));
 }
+
+#[test]
+fn can_convert_from_floating_point() {
+    assert_eq!(Some(Finite(1.0)), from_f32(1.0));
+    assert_eq!(Some(Infinity), from_f32(f32::INFINITY));
+    assert_eq!(Some(NegativeInfinity), from_f32(f32::NEG_INFINITY));
+    assert_eq!(None, from_f32(f32::NAN));
+    assert_eq!(Some(Finite(1.0)), from_f64(1.0));
+    assert_eq!(Some(Infinity), from_f64(f64::INFINITY));
+    assert_eq!(Some(NegativeInfinity), from_f64(f64::NEG_INFINITY));
+    assert_eq!(None, from_f64(f64::NAN));
+}
