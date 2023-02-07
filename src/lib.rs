@@ -157,6 +157,9 @@ impl<T> Infinitable<T> {
 impl<T> From<T> for Infinitable<T> {
     /// Converts from a value `T` to [`Finite`] containing the underlying value.
     ///
+    /// Note that there is no special handling for pre-existing infinite values.
+    /// Consider using [`from_f32`] or [`from_f64`] for floating-point numbers.
+    ///
     /// # Examples
     ///
     /// ```
