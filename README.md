@@ -42,7 +42,7 @@ fn main() {
 }
 ```
 
-The library provides the `from_f32` and `from_f64` to convert from floating-point values while taking into account infinite values and NaN:
+The library provides the `from_f32` and `from_f64` functions to convert from floating-point values while taking into account infinite values and NaN:
 
 ```
 extern crate infinitable;
