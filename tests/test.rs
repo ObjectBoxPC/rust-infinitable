@@ -5,6 +5,8 @@ const NEGINF: Infinitable<i32> = NegativeInfinity;
 const INF: Infinitable<i32> = Infinity;
 const ZERO: Infinitable<i32> = Finite(0);
 const ONE: Infinitable<i32> = Finite(1);
+const NEGONE: Infinitable<i32> = Finite(-1);
+const TWO: Infinitable<i32> = Finite(2);
 
 #[test]
 fn can_extract_finite_value() {
@@ -129,7 +131,7 @@ fn can_format_display() {
 fn can_add() {
     assert_eq!(ONE, ONE + ZERO);
     assert_eq!(ONE, ZERO + ONE);
-    assert_eq!(Finite(2), ONE + ONE);
+    assert_eq!(TWO, ONE + ONE);
     assert_eq!(INF, ONE + INF);
     assert_eq!(INF, INF + ONE);
     assert_eq!(INF, INF + INF);
@@ -175,9 +177,74 @@ fn cannot_subtract_neginf_from_self() {
 }
 
 #[test]
+fn can_multiply() {
+    assert_eq!(ONE, ONE * ONE);
+    assert_eq!(ZERO, ZERO * ONE);
+    assert_eq!(INF, ONE * INF);
+    assert_eq!(INF, INF * ONE);
+    assert_eq!(INF, INF * INF);
+    assert_eq!(INF, NEGINF * NEGINF);
+    assert_eq!(INF, NEGONE * NEGINF);
+    assert_eq!(NEGINF, ONE * NEGINF);
+    assert_eq!(NEGINF, NEGINF * ONE);
+    assert_eq!(NEGINF, NEGONE * INF);
+    assert_eq!(NEGINF, NEGINF * INF);
+}
+
+#[test]
+#[should_panic(expected = "Cannot multiply infinite value and zero or unordered value")]
+fn cannot_multiply_inf_and_zero() {
+    let _ = INF * ZERO;
+}
+
+#[test]
+#[should_panic(expected = "Cannot multiply infinite value and zero or unordered value")]
+fn cannot_multiply_neginf_and_zero() {
+    let _ = NEGINF * ZERO;
+}
+
+#[test]
+fn can_divide() {
+    assert_eq!(ONE, ONE / ONE);
+    assert_eq!(ONE, TWO / TWO);
+    assert_eq!(NEGONE, ONE / NEGONE);
+    assert_eq!(NEGONE, NEGONE / ONE);
+    assert_eq!(ZERO, ZERO / ONE);
+    assert_eq!(ZERO, ZERO / NEGONE);
+    assert_eq!(ZERO, ONE / INF);
+    assert_eq!(ZERO, ONE / NEGINF);
+    assert_eq!(ZERO, NEGONE / NEGINF);
+    assert_eq!(ZERO, NEGONE / INF);
+    assert_eq!(INF, INF / ONE);
+    assert_eq!(INF, INF / ZERO);
+    assert_eq!(INF, NEGINF / NEGONE);
+    assert_eq!(NEGINF, NEGINF / ONE);
+    assert_eq!(NEGINF, NEGINF / ZERO);
+    assert_eq!(NEGINF, INF / NEGONE);
+}
+
+#[test]
+#[should_panic(expected = "Cannot divide two infinite values")]
+fn cannot_divide_inf_by_itself() {
+    let _ = INF / INF;
+}
+
+#[test]
+#[should_panic(expected = "Cannot divide two infinite values")]
+fn cannot_divide_neginf_by_itself() {
+    let _ = INF / INF;
+}
+
+#[test]
+#[should_panic(expected = "Cannot divide two zeros or unordered values")]
+fn cannot_divide_zero_by_itself() {
+    let _ = ZERO / ZERO;
+}
+
+#[test]
 fn can_negate() {
     assert_eq!(ZERO, -ZERO);
-    assert_eq!(Finite(-1), -ONE);
+    assert_eq!(NEGONE, -ONE);
     assert_eq!(NEGINF, -INF);
     assert_eq!(INF, -NEGINF);
 }

@@ -25,10 +25,13 @@
 #[cfg(test)]
 extern crate core;
 
+extern crate num_traits;
+
 use core::cmp::Ordering;
 use core::fmt;
 use core::fmt::{Display, Formatter};
-use core::ops::{Add, Neg, Sub};
+use core::ops::{Add, Div, Mul, Neg, Sub};
+use num_traits::Zero;
 
 /// An "infinitable" value, one that can be either finite or infinite
 ///
@@ -375,6 +378,185 @@ where
             (Finite(lf), Finite(rf)) => Finite(lf.sub(rf)),
             (Infinity, _) | (_, NegativeInfinity) => Infinity,
             (NegativeInfinity, _) | (_, Infinity) => NegativeInfinity,
+        }
+    }
+}
+
+impl<T> Mul for Infinitable<T>
+where
+    T: Mul + Zero + PartialOrd,
+{
+    type Output = Infinitable<<T as Mul>::Output>;
+
+    /// Multiplies two values.
+    ///
+    /// The multiplication operation follows these rules:
+    ///
+    /// | self               | rhs                | result                     |
+    /// |--------------------|--------------------|----------------------------|
+    /// | `Finite`           | `Finite`           | `Finite` (multiply values) |
+    /// | `Finite` (> 0)     | `Infinity`         | `Infinity`                 |
+    /// | `Finite` (~ 0)     | `Infinity`         | Undefined (panic)          |
+    /// | `Finite` (< 0)     | `Infinity`         | `NegativeInfinity`         |
+    /// | `Finite` (> 0)     | `NegativeInfinity` | `NegativeInfinity`         |
+    /// | `Finite` (~ 0)     | `NegativeInfinity` | Undefined (panic)          |
+    /// | `Finite` (< 0)     | `NegativeInfinity` | `Infinity`                 |
+    /// | `Infinity`         | `Finite` (> 0)     | `Infinity`                 |
+    /// | `Infinity`         | `Finite` (~ 0)     | Undefined (panic)          |
+    /// | `Infinity`         | `Finite` (< 0)     | `NegativeInfinity`         |
+    /// | `Infinity`         | `Infinity`         | `Infinity`                 |
+    /// | `Infinity`         | `NegativeInfinity` | `NegativeInfinity`         |
+    /// | `NegativeInfinity` | `Finite` (> 0)     | `NegativeInfinity`         |
+    /// | `NegativeInfinity` | `Finite` (~ 0)     | Undefined (panic)          |
+    /// | `NegativeInfinity` | `Finite` (< 0)     | `Infinity`                 |
+    /// | `NegativeInfinity` | `Infinity`         | `NegativeInfinity`         |
+    /// | `NegativeInfinity` | `NegativeInfinity` | `Infinity`                 |
+    ///
+    /// (In the table, "~ 0" refers to a value that is either equal to or
+    /// unordered with zero.)
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use infinitable::*;
+    ///
+    /// assert_eq!(Finite(6), Finite(2) * Finite(3));
+    /// assert_eq!(Infinity, Infinity * Finite(2));
+    /// assert_eq!(Infinity, Finite(-1) * NegativeInfinity);
+    /// assert_eq!(NegativeInfinity, NegativeInfinity * Finite(2));
+    /// assert_eq!(NegativeInfinity, Finite(-1) * Infinity);
+    /// ```
+    ///
+    /// The multiplication operation panics when an infinite value is multiplied
+    /// with zero:
+    ///
+    /// ```should_panic
+    /// use infinitable::*;
+    ///
+    /// let infinity: Infinitable<i32> = Infinity;
+    /// let _ = infinity * Finite(0);
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// Panics if one of the operands is `Infinity` or `NegativeInfinity` and
+    /// the other is a `Finite` value with an underlying value equal to or
+    /// unordered with zero.
+    fn mul(self, rhs: Infinitable<T>) -> Infinitable<<T as Mul>::Output> {
+        match (self, rhs) {
+            (Infinity, Infinity) | (NegativeInfinity, NegativeInfinity) => Infinity,
+            (Infinity, NegativeInfinity) | (NegativeInfinity, Infinity) => NegativeInfinity,
+            (Infinity, Finite(x)) | (Finite(x), Infinity) => match x.partial_cmp(&T::zero()) {
+                Some(Ordering::Greater) => Infinity,
+                Some(Ordering::Less) => NegativeInfinity,
+                _ => panic!("Cannot multiply infinite value and zero or unordered value"),
+            },
+            (NegativeInfinity, Finite(x)) | (Finite(x), NegativeInfinity) => {
+                match x.partial_cmp(&T::zero()) {
+                    Some(Ordering::Greater) => NegativeInfinity,
+                    Some(Ordering::Less) => Infinity,
+                    _ => panic!("Cannot multiply infinite value and zero or unordered value"),
+                }
+            }
+            (Finite(lf), Finite(rf)) => Finite(lf.mul(rf)),
+        }
+    }
+}
+
+impl<T> Div for Infinitable<T>
+where
+    T: Div + Zero + PartialOrd,
+    <T as Div>::Output: Zero,
+{
+    type Output = Infinitable<<T as Div>::Output>;
+
+    /// Divides two values.
+    ///
+    /// The division operation follows these rules:
+    ///
+    /// | self               | rhs                | result                     |
+    /// |--------------------|--------------------|----------------------------|
+    /// | `Finite` (> 0)     | `Finite` (~ 0)     | `Infinity`                 |
+    /// | `Finite` (~ 0)     | `Finite` (~ 0)     | Undefined (panic)          |
+    /// | `Finite` (< 0)     | `Finite` (~ 0)     | `NegativeInfinity`         |
+    /// | `Finite`           | `Finite` (<> 0)    | `Finite` (divide values)   |
+    /// | `Finite`           | `Infinity`         | Zero                       |
+    /// | `Finite`           | `NegativeInfinity` | Zero                       |
+    /// | `Infinity`         | `Finite` (> 0)     | `Infinity`                 |
+    /// | `Infinity`         | `Finite` (~ 0)     | `Infinity`                 |
+    /// | `Infinity`         | `Finite` (< 0)     | `NegativeInfinity`         |
+    /// | `Infinity`         | `Infinity`         | Undefined (panic)          |
+    /// | `Infinity`         | `NegativeInfinity` | Undefined (panic)          |
+    /// | `NegativeInfinity` | `Finite` (> 0)     | `NegativeInfinity`         |
+    /// | `NegativeInfinity` | `Finite` (~ 0)     | `NegativeInfinity`         |
+    /// | `NegativeInfinity` | `Finite` (< 0)     | `Infinity`                 |
+    /// | `NegativeInfinity` | `Infinity`         | Undefined (panic)          |
+    /// | `NegativeInfinity` | `NegativeInfinity` | Undefined (panic)          |
+    ///
+    /// (In the table, "~ 0" refers to a value that is either equal to or
+    /// unordered with zero, and "<> 0" refers to a value that is either
+    /// greater than or less than zero.)
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use infinitable::*;
+    ///
+    /// assert_eq!(Finite(3), Finite(6) / Finite(2));
+    /// assert_eq!(Infinity, Infinity / Finite(1));
+    /// assert_eq!(Infinity, NegativeInfinity / Finite(-2));
+    /// assert_eq!(NegativeInfinity, NegativeInfinity / Finite(1));
+    /// assert_eq!(NegativeInfinity, Infinity / Finite(-2));
+    /// assert_eq!(Finite(0), Finite(1) / Infinity);
+    /// assert_eq!(Finite(0), Finite(1) / NegativeInfinity);
+    /// ```
+    ///
+    /// The division operation panics when an infinite value is divided by
+    /// another infinite value, or when zero is divided by itself:
+    ///
+    /// ```should_panic
+    /// use infinitable::*;
+    ///
+    /// let infinity: Infinitable<i32> = Infinity;
+    /// let _ = infinity / infinity;
+    /// ```
+    ///
+    /// ```should_panic
+    /// use infinitable::*;
+    ///
+    /// let _ = Finite(0) / Finite(0);
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// Panics if both operands are either `Infinity` or `NegativeInfinity`, or
+    /// both operands are `Finite` with an underlying value equal to or
+    /// unordered with zero.
+    fn div(self, rhs: Infinitable<T>) -> Infinitable<<T as Div>::Output> {
+        match (self, rhs) {
+            (Infinity, Infinity)
+            | (NegativeInfinity, NegativeInfinity)
+            | (Infinity, NegativeInfinity)
+            | (NegativeInfinity, Infinity) => panic!("Cannot divide two infinite values"),
+            (Infinity, Finite(x)) => match x.partial_cmp(&T::zero()) {
+                Some(Ordering::Less) => NegativeInfinity,
+                _ => Infinity,
+            },
+            (NegativeInfinity, Finite(x)) => match x.partial_cmp(&T::zero()) {
+                Some(Ordering::Less) => Infinity,
+                _ => NegativeInfinity,
+            },
+            (Finite(_), Infinity) | (Finite(_), NegativeInfinity) => {
+                Finite(<T as Div>::Output::zero())
+            }
+            (Finite(lf), Finite(rf)) => match rf.partial_cmp(&T::zero()) {
+                Some(Ordering::Greater) | Some(Ordering::Less) => Finite(lf.div(rf)),
+                _ => match lf.partial_cmp(&T::zero()) {
+                    Some(Ordering::Greater) => Infinity,
+                    Some(Ordering::Less) => NegativeInfinity,
+                    _ => panic!("Cannot divide two zeros or unordered values"),
+                },
+            },
         }
     }
 }
