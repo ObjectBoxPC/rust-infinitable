@@ -661,6 +661,10 @@ where
 /// | Positive infinity | <code>[Some]\([Infinity])</code>         |
 /// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
 /// | NaN               | [`None`]                                 |
+///
+/// # Versioning
+///
+/// Available since 1.5.0.
 pub fn from_f32(value: f32) -> Option<Infinitable<f32>> {
     if value.is_finite() {
         Some(Finite(value))
@@ -684,6 +688,10 @@ pub fn from_f32(value: f32) -> Option<Infinitable<f32>> {
 /// | Positive infinity | <code>[Some]\([Infinity])</code>         |
 /// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
 /// | NaN               | [`None`]                                 |
+///
+/// # Versioning
+///
+/// Available since 1.5.0.
 pub fn from_f64(value: f64) -> Option<Infinitable<f64>> {
     if value.is_finite() {
         Some(Finite(value))
