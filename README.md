@@ -28,15 +28,33 @@ Tests are in the `tests` directory. Simply run `cargo test`.
 
 ## Note About Floating-Point Numbers
 
-Infinitable does not account for existing infinite values in floating-point numeric types. The infinity provided by Infinitable compares greater than *all* existing values, and the negative infinity provided by Infinitable compares less than *all* existing values.
+The infinite values provided by Infinitable are different from the existing infinite values in floating-point numeric types. Therefore, simply using `Finite` or `Infinitable::from` to convert from a floating-point value to an `Infinitable` may lead to unintuitive results:
 
-To illustrate, here are some values listed from least to greatest:
+```
+extern crate infinitable;
+use infinitable::Infinitable;
 
-* Infinitable `NegativeInfinity`
-* Floating-point negative infinity
-* Floating-point zero
-* Floating-point infinity
-* Infinitable `Infinity`
+fn main() {
+	let infinitable_infinity = Infinitable::Infinity;
+	let fp_infinity = Infinitable::Finite(f64::INFINITY);
+
+	assert!(infinitable_infinity > fp_infinity);
+}
+```
+
+The library provides the `from_f32` and `from_f64` functions to convert from floating-point values while taking into account infinite values and NaN:
+
+```
+extern crate infinitable;
+use infinitable::Infinitable;
+
+fn main() {
+	let infinitable_infinity = Infinitable::Infinity;
+	let fp_infinity = infinitable::from_f64(f64::INFINITY).unwrap();
+
+	assert!(infinitable_infinity == fp_infinity);
+}
+```
 
 ## License
 
