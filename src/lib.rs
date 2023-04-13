@@ -314,6 +314,10 @@ where
     /// # Panics
     ///
     /// Panics if the operands consist of `Infinity` and `NegativeInfinity`.
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.5.0.
     fn add(self, rhs: Infinitable<T>) -> Infinitable<T::Output> {
         match (self, rhs) {
             (Infinity, NegativeInfinity) | (NegativeInfinity, Infinity) => {
@@ -373,6 +377,10 @@ where
     /// # Panics
     ///
     /// Panics if the operands are both `Infinity` or both `NegativeInfinity`.
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.5.0.
     fn sub(self, rhs: Infinitable<T>) -> Infinitable<T::Output> {
         match (self, rhs) {
             (Infinity, Infinity) | (NegativeInfinity, NegativeInfinity) => {
@@ -445,6 +453,10 @@ where
     /// Panics if one of the operands is `Infinity` or `NegativeInfinity` and
     /// the other is a `Finite` value with an underlying value equal to or
     /// unordered with zero.
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.5.0.
     fn mul(self, rhs: Infinitable<T>) -> Infinitable<<T as Mul>::Output> {
         match (self, rhs) {
             (Infinity, Infinity) | (NegativeInfinity, NegativeInfinity) => Infinity,
@@ -535,6 +547,10 @@ where
     /// Panics if both operands are either `Infinity` or `NegativeInfinity`, or
     /// both operands are `Finite` with an underlying value equal to or
     /// unordered with zero.
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.5.0.
     fn div(self, rhs: Infinitable<T>) -> Infinitable<<T as Div>::Output> {
         match (self, rhs) {
             (Infinity, Infinity)
