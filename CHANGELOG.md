@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.0
+
+* Arithmetic operators are now supported. (Refer to the documentation for each operator for how infinite values are handled.)
+	* This adds a dependency on [num-traits](https://crates.io/crates/num-traits).
+* The `from_f32` and `from_f64` functions are added to convert more intuitively from floating-point values.
+
 ## 1.4.0
 
 * This library now references `core` instead of `std` so it can be used without the full standard library.
