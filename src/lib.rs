@@ -258,7 +258,7 @@ impl<T> From<T> for Infinitable<T> {
     }
 }
 
-/// Partial order, where the underlying type `T` implements a partial order.
+/// Partial order, when the underlying type `T` implements a partial order.
 ///
 /// [`NegativeInfinity`] compares less than all other values,
 /// and [`Infinity`] compares greater than all other values.
@@ -292,7 +292,7 @@ where
     }
 }
 
-/// Total order, where the underlying type `T` implements a total order.
+/// Total order, when the underlying type `T` implements a total order.
 ///
 /// [`NegativeInfinity`] compares less than all other values,
 /// and [`Infinity`] compares greater than all other values.
@@ -693,7 +693,7 @@ impl<T> Display for Infinitable<T>
 where
     T: Display,
 {
-    /// Formats the value, where the underlying type `T` supports formatting.
+    /// Formats the value, when the underlying type `T` supports formatting.
     ///
     /// [`Infinity`] is formatted to `"inf"`, [`NegativeInfinity`] is formatted
     /// to `"-inf"`, and [`Finite`] is formatted based on the underlying value.
