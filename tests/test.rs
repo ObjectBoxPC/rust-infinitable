@@ -268,6 +268,13 @@ fn can_convert_from_option() {
 }
 
 #[test]
+fn can_convert_into() {
+    assert_eq!(Finite(1i64), ONE.convert_into());
+    assert_eq!(Ok(Finite(1i16)), ONE.try_convert_into());
+    assert!(NEGONE.try_convert_into::<u32>().is_err());
+}
+
+#[test]
 fn can_convert_from_floating_point() {
     assert_eq!(Some(Finite(1.0)), from_f32(1.0));
     assert_eq!(Some(Infinity), from_f32(f32::INFINITY));

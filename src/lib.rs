@@ -28,6 +28,7 @@ extern crate core;
 extern crate num_traits;
 
 use core::cmp::Ordering;
+use core::convert::TryInto;
 use core::fmt;
 use core::fmt::{Display, Formatter};
 use core::ops::{Add, Div, Mul, Neg, Sub};
@@ -153,6 +154,78 @@ impl<T> Infinitable<T> {
         match option {
             Some(x) => Finite(x),
             None => NegativeInfinity,
+        }
+    }
+
+    /// Converts the value into a different type, based on the conversion of the
+    /// underlying type `T`.
+    ///
+    /// Infinite values are preserved as is, while finite values are converted
+    /// using [`into`] on the underlying value.
+    ///
+    /// [`into`]: Into::into
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use infinitable::*;
+    /// let finite = Finite(5);
+    /// let finite64: Infinitable<i64> = finite.convert_into();
+    /// assert_eq!(Finite(5i64), finite64);
+    /// let infinite: Infinitable<i32> = Infinity;
+    /// let infinite64: Infinitable<i64> = infinite.convert_into();
+    /// assert_eq!(Infinity, infinite64);
+    /// ```
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.6.0.
+    pub fn convert_into<U>(self) -> Infinitable<U>
+    where
+        T: Into<U>,
+    {
+        match self {
+            Finite(x) => Finite(x.into()),
+            Infinity => Infinity,
+            NegativeInfinity => NegativeInfinity,
+        }
+    }
+
+    /// Converts the value into a different type, based on the conversion of the
+    /// underlying type `T`.
+    ///
+    /// Infinite values are preserved as is, while finite values are converted
+    /// using [`try_into`] on the underlying value. Conversion of infinite
+    /// values always succeeds, while conversion of finite values may fail.
+    ///
+    /// [`try_into`]: TryInto::try_into
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use infinitable::*;
+    /// use std::num::TryFromIntError;
+    /// let finite = Finite(1000);
+    /// let finite8: Result<Infinitable<i8>, TryFromIntError>
+    ///     = finite.try_convert_into();
+    /// assert!(finite8.is_err());
+    /// let infinite: Infinitable<i32> = Infinity;
+    /// let infinite8: Result<Infinitable<i8>, TryFromIntError>
+    ///     = infinite.try_convert_into();
+    /// assert_eq!(Ok(Infinity), infinite8);
+    /// ```
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.6.0.
+    pub fn try_convert_into<U>(self) -> Result<Infinitable<U>, T::Error>
+    where
+        T: TryInto<U>,
+    {
+        match self {
+            Finite(x) => x.try_into().map(|y| Finite(y)),
+            Infinity => Ok(Infinity),
+            NegativeInfinity => Ok(NegativeInfinity),
         }
     }
 }
