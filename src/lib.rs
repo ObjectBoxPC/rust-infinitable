@@ -735,6 +735,19 @@ where
 /// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
 /// | NaN               | [`None`]                                 |
 ///
+/// # Examples
+///
+/// ```
+/// use infinitable::*;
+///
+/// let finite = from_f32(5.0);
+/// assert_eq!(Some(Finite(5.0)), finite);
+/// let infinity = from_f32(f32::INFINITY);
+/// assert_eq!(Some(Infinity), infinity);
+/// let nan = from_f32(f32::NAN);
+/// assert_eq!(None, nan);
+/// ```
+///
 /// # Versioning
 ///
 /// Available since 1.5.0.
@@ -761,6 +774,19 @@ pub fn from_f32(value: f32) -> Option<Infinitable<f32>> {
 /// | Positive infinity | <code>[Some]\([Infinity])</code>         |
 /// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
 /// | NaN               | [`None`]                                 |
+///
+/// # Examples
+///
+/// ```
+/// use infinitable::*;
+///
+/// let finite = from_f64(5.0);
+/// assert_eq!(Some(Finite(5.0)), finite);
+/// let infinity = from_f64(f64::INFINITY);
+/// assert_eq!(Some(Infinity), infinity);
+/// let nan = from_f64(f64::NAN);
+/// assert_eq!(None, nan);
+/// ```
 ///
 /// # Versioning
 ///
