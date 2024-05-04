@@ -22,13 +22,7 @@
 
 #![cfg_attr(not(test), no_std)]
 
-#[cfg(test)]
-extern crate core;
-
-extern crate num_traits;
-
 use core::cmp::Ordering;
-use core::convert::TryInto;
 use core::fmt;
 use core::fmt::{Display, Formatter};
 use core::ops::{Add, Div, Mul, Neg, Sub};
