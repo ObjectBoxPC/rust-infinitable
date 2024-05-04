@@ -1,4 +1,3 @@
-extern crate infinitable;
 use infinitable::*;
 
 const NEGINF: Infinitable<i32> = NegativeInfinity;
