@@ -9,7 +9,6 @@ A representation of infinity is useful for graph algorithms such as Dijkstra's a
 Simply install the `infinitable` crate, available on Crates.io.
 
 ```rust
-extern crate infinitable;
 use infinitable::Infinitable;
 
 fn main() {
@@ -31,7 +30,6 @@ Tests are in the `tests` directory. Simply run `cargo test`.
 The infinite values provided by Infinitable are different from the existing infinite values in floating-point numeric types. Therefore, simply using `Finite` or `Infinitable::from` to convert from a floating-point value to an `Infinitable` may lead to unintuitive results:
 
 ```
-extern crate infinitable;
 use infinitable::Infinitable;
 
 fn main() {
@@ -45,7 +43,6 @@ fn main() {
 The library provides the `from_f32` and `from_f64` functions to convert from floating-point values while taking into account infinite values and NaN:
 
 ```
-extern crate infinitable;
 use infinitable::Infinitable;
 
 fn main() {
