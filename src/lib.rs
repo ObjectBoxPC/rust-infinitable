@@ -174,6 +174,7 @@ impl<T> Infinitable<T> {
     /// # Versioning
     ///
     /// Available since 1.6.0.
+    #[must_use]
     pub fn convert_into<U>(self) -> Infinitable<U>
     where
         T: Into<U>,
@@ -212,6 +213,7 @@ impl<T> Infinitable<T> {
     /// # Versioning
     ///
     /// Available since 1.6.0.
+    #[must_use]
     pub fn try_convert_into<U>(self) -> Result<Infinitable<U>, T::Error>
     where
         T: TryInto<U>,
