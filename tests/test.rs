@@ -1,4 +1,3 @@
-extern crate infinitable;
 use infinitable::*;
 
 const NEGINF: Infinitable<i32> = NegativeInfinity;
@@ -265,6 +264,13 @@ fn can_convert_from_option() {
     assert_eq!(ZERO, Infinitable::finite_or_negative_infinity(Some(0)));
     assert_eq!(ONE, Infinitable::finite_or_negative_infinity(Some(1)));
     assert_eq!(NEGINF, Infinitable::finite_or_negative_infinity(None));
+}
+
+#[test]
+fn can_convert_into() {
+    assert_eq!(Finite(1i64), ONE.convert_into());
+    assert_eq!(Ok(Finite(1i16)), ONE.try_convert_into());
+    assert!(NEGONE.try_convert_into::<u32>().is_err());
 }
 
 #[test]

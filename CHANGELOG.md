@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.0
+
+* The `convert_into()` and `try_convert_into()` methods are added to convert the underlying type of an infinitable value.
+* Example code is updated to reflect the Rust 2021 edition.
+* Missing version information for functionality added in 1.5.0 is added.
+
 ## 1.5.0
 
 * Arithmetic operators are now supported. (Refer to the documentation for each operator for how infinite values are handled.)

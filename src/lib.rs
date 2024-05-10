@@ -22,11 +22,6 @@
 
 #![cfg_attr(not(test), no_std)]
 
-#[cfg(test)]
-extern crate core;
-
-extern crate num_traits;
-
 use core::cmp::Ordering;
 use core::fmt;
 use core::fmt::{Display, Formatter};
@@ -155,6 +150,80 @@ impl<T> Infinitable<T> {
             None => NegativeInfinity,
         }
     }
+
+    /// Converts the value into a different type, based on the conversion of the
+    /// underlying type `T`.
+    ///
+    /// Infinite values are preserved as is, while finite values are converted
+    /// using [`into`] on the underlying value.
+    ///
+    /// [`into`]: Into::into
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use infinitable::*;
+    /// let finite = Finite(5);
+    /// let finite64: Infinitable<i64> = finite.convert_into();
+    /// assert_eq!(Finite(5i64), finite64);
+    /// let infinite: Infinitable<i32> = Infinity;
+    /// let infinite64: Infinitable<i64> = infinite.convert_into();
+    /// assert_eq!(Infinity, infinite64);
+    /// ```
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.6.0.
+    #[must_use]
+    pub fn convert_into<U>(self) -> Infinitable<U>
+    where
+        T: Into<U>,
+    {
+        match self {
+            Finite(x) => Finite(x.into()),
+            Infinity => Infinity,
+            NegativeInfinity => NegativeInfinity,
+        }
+    }
+
+    /// Converts the value into a different type, based on the conversion of the
+    /// underlying type `T`.
+    ///
+    /// Infinite values are preserved as is, while finite values are converted
+    /// using [`try_into`] on the underlying value. Conversion of infinite
+    /// values always succeeds, while conversion of finite values may fail.
+    ///
+    /// [`try_into`]: TryInto::try_into
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use infinitable::*;
+    /// use std::num::TryFromIntError;
+    /// let finite = Finite(1000);
+    /// let finite8: Result<Infinitable<i8>, TryFromIntError>
+    ///     = finite.try_convert_into();
+    /// assert!(finite8.is_err());
+    /// let infinite: Infinitable<i32> = Infinity;
+    /// let infinite8: Result<Infinitable<i8>, TryFromIntError>
+    ///     = infinite.try_convert_into();
+    /// assert_eq!(Ok(Infinity), infinite8);
+    /// ```
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.6.0.
+    #[must_use]
+    pub fn try_convert_into<U>(self) -> Result<Infinitable<U>, T::Error>
+    where
+        T: TryInto<U>,
+    {
+        match self {
+            Finite(x) => x.try_into().map(|y| Finite(y)),
+            Infinity => Ok(Infinity),
+            NegativeInfinity => Ok(NegativeInfinity),
+        }
+    }
 }
 
 impl<T> From<T> for Infinitable<T> {
@@ -185,7 +254,7 @@ impl<T> From<T> for Infinitable<T> {
     }
 }
 
-/// Partial order, where the underlying type `T` implements a partial order.
+/// Partial order, when the underlying type `T` implements a partial order.
 ///
 /// [`NegativeInfinity`] compares less than all other values,
 /// and [`Infinity`] compares greater than all other values.
@@ -219,7 +288,7 @@ where
     }
 }
 
-/// Total order, where the underlying type `T` implements a total order.
+/// Total order, when the underlying type `T` implements a total order.
 ///
 /// [`NegativeInfinity`] compares less than all other values,
 /// and [`Infinity`] compares greater than all other values.
@@ -314,6 +383,10 @@ where
     /// # Panics
     ///
     /// Panics if the operands consist of `Infinity` and `NegativeInfinity`.
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.5.0.
     fn add(self, rhs: Infinitable<T>) -> Infinitable<T::Output> {
         match (self, rhs) {
             (Infinity, NegativeInfinity) | (NegativeInfinity, Infinity) => {
@@ -373,6 +446,10 @@ where
     /// # Panics
     ///
     /// Panics if the operands are both `Infinity` or both `NegativeInfinity`.
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.5.0.
     fn sub(self, rhs: Infinitable<T>) -> Infinitable<T::Output> {
         match (self, rhs) {
             (Infinity, Infinity) | (NegativeInfinity, NegativeInfinity) => {
@@ -445,6 +522,10 @@ where
     /// Panics if one of the operands is `Infinity` or `NegativeInfinity` and
     /// the other is a `Finite` value with an underlying value equal to or
     /// unordered with zero.
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.5.0.
     fn mul(self, rhs: Infinitable<T>) -> Infinitable<<T as Mul>::Output> {
         match (self, rhs) {
             (Infinity, Infinity) | (NegativeInfinity, NegativeInfinity) => Infinity,
@@ -535,6 +616,10 @@ where
     /// Panics if both operands are either `Infinity` or `NegativeInfinity`, or
     /// both operands are `Finite` with an underlying value equal to or
     /// unordered with zero.
+    ///
+    /// # Versioning
+    ///
+    /// Available since 1.5.0.
     fn div(self, rhs: Infinitable<T>) -> Infinitable<<T as Div>::Output> {
         match (self, rhs) {
             (Infinity, Infinity)
@@ -604,7 +689,7 @@ impl<T> Display for Infinitable<T>
 where
     T: Display,
 {
-    /// Formats the value, where the underlying type `T` supports formatting.
+    /// Formats the value, when the underlying type `T` supports formatting.
     ///
     /// [`Infinity`] is formatted to `"inf"`, [`NegativeInfinity`] is formatted
     /// to `"-inf"`, and [`Finite`] is formatted based on the underlying value.
@@ -645,6 +730,23 @@ where
 /// | Positive infinity | <code>[Some]\([Infinity])</code>         |
 /// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
 /// | NaN               | [`None`]                                 |
+///
+/// # Examples
+///
+/// ```
+/// use infinitable::*;
+///
+/// let finite = from_f32(5.0);
+/// assert_eq!(Some(Finite(5.0)), finite);
+/// let infinity = from_f32(f32::INFINITY);
+/// assert_eq!(Some(Infinity), infinity);
+/// let nan = from_f32(f32::NAN);
+/// assert_eq!(None, nan);
+/// ```
+///
+/// # Versioning
+///
+/// Available since 1.5.0.
 pub fn from_f32(value: f32) -> Option<Infinitable<f32>> {
     if value.is_finite() {
         Some(Finite(value))
@@ -668,6 +770,23 @@ pub fn from_f32(value: f32) -> Option<Infinitable<f32>> {
 /// | Positive infinity | <code>[Some]\([Infinity])</code>         |
 /// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
 /// | NaN               | [`None`]                                 |
+///
+/// # Examples
+///
+/// ```
+/// use infinitable::*;
+///
+/// let finite = from_f64(5.0);
+/// assert_eq!(Some(Finite(5.0)), finite);
+/// let infinity = from_f64(f64::INFINITY);
+/// assert_eq!(Some(Infinity), infinity);
+/// let nan = from_f64(f64::NAN);
+/// assert_eq!(None, nan);
+/// ```
+///
+/// # Versioning
+///
+/// Available since 1.5.0.
 pub fn from_f64(value: f64) -> Option<Infinitable<f64>> {
     if value.is_finite() {
         Some(Finite(value))

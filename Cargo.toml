@@ -1,6 +1,15 @@
 [package]
 name = "infinitable"
-version = "1.5.0"
+version = "1.6.0"
+edition = "2021"
+include = [
+	"/Cargo.toml",
+	"/src",
+	"/tests",
+	"/README.md",
+	"/LICENSE.txt",
+	"/CHANGELOG.md",
+]
 authors = ["Philip Chung <philipchung1995@yahoo.com>"]
 description = "Infinity for types without infinite values"
 repository = "https://github.com/ObjectBoxPC/rust-infinitable"
