@@ -226,6 +226,56 @@ impl<T> Infinitable<T> {
     }
 }
 
+macro_rules! from_float_impl {
+    ($t:ident) => {
+        impl Infinitable<$t> {
+            #[doc = concat!("Converts from an [`", stringify!($t), "`] value to an optional [`Infinitable<", stringify!($t), ">`]")]
+            /// accounting for floating-point infinities and NaN.
+            ///
+            /// The value is converted as follows:
+            ///
+            /// | value             | result                                   |
+            /// |-------------------|------------------------------------------|
+            /// | Finite value `x`  | <code>[Some]\([Finite]\(x))</code>       |
+            /// | Positive infinity | <code>[Some]\([Infinity])</code>         |
+            /// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
+            /// | NaN               | [`None`]                                 |
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// use infinitable::*;
+            ///
+            #[doc = concat!("let finite = Infinitable::<", stringify!($t), ">::from_float(5.0);")]
+            #[doc = concat!("let infinity = Infinitable::<", stringify!($t), ">::from_float(", stringify!($t), "::INFINITY);")]
+            #[doc = concat!("let nan = Infinitable::<", stringify!($t), ">::from_float(", stringify!($t), "::NAN);")]
+            /// assert_eq!(Some(Finite(5.0)), finite);
+            /// assert_eq!(Some(Infinity), infinity);
+            /// assert_eq!(None, nan);
+            /// ```
+            ///
+            /// # Versioning
+            ///
+            /// Available since 1.6.0.
+            #[must_use]
+            pub fn from_float(value: $t) -> Option<Infinitable<$t>> {
+                if value.is_finite() {
+                    Some(Finite(value))
+                } else if value.is_nan() {
+                    None
+                } else if value.is_sign_positive() {
+                    Some(Infinity)
+                } else {
+                    Some(NegativeInfinity)
+                }
+            }
+        }
+    };
+}
+
+from_float_impl!(f32);
+from_float_impl!(f64);
+
 impl<T> From<T> for Infinitable<T> {
     /// Converts from a value `T` to [`Finite`] containing the underlying value.
     ///
@@ -719,82 +769,22 @@ where
     }
 }
 
-/// Converts from [`f32`] value to an optional [`Infinitable<f32>`],
-/// accounting for floating-point infinities and NaN.
-///
-/// The value is converted as follows:
-///
-/// | value             | result                                   |
-/// |-------------------|------------------------------------------|
-/// | Finite value `x`  | <code>[Some]\([Finite]\(x))</code>       |
-/// | Positive infinity | <code>[Some]\([Infinity])</code>         |
-/// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
-/// | NaN               | [`None`]                                 |
-///
-/// # Examples
-///
-/// ```
-/// use infinitable::*;
-///
-/// let finite = from_f32(5.0);
-/// assert_eq!(Some(Finite(5.0)), finite);
-/// let infinity = from_f32(f32::INFINITY);
-/// assert_eq!(Some(Infinity), infinity);
-/// let nan = from_f32(f32::NAN);
-/// assert_eq!(None, nan);
-/// ```
+/// Equivalent to [`Infinitable::<f32>::from_float`].
 ///
 /// # Versioning
 ///
 /// Available since 1.5.0.
+#[deprecated(since = "1.6.0", note = "Use Infinitable::<f32>::from_float instead")]
 pub fn from_f32(value: f32) -> Option<Infinitable<f32>> {
-    if value.is_finite() {
-        Some(Finite(value))
-    } else if value.is_nan() {
-        None
-    } else if value.is_sign_positive() {
-        Some(Infinity)
-    } else {
-        Some(NegativeInfinity)
-    }
+    Infinitable::<f32>::from_float(value)
 }
 
-/// Converts from [`f64`] value to an optional [`Infinitable<f64>`],
-/// accounting for floating-point infinities and NaN.
-///
-/// The value is converted as follows:
-///
-/// | value             | result                                   |
-/// |-------------------|------------------------------------------|
-/// | Finite value `x`  | <code>[Some]\([Finite]\(x))</code>       |
-/// | Positive infinity | <code>[Some]\([Infinity])</code>         |
-/// | Negative infinity | <code>[Some]\([NegativeInfinity])</code> |
-/// | NaN               | [`None`]                                 |
-///
-/// # Examples
-///
-/// ```
-/// use infinitable::*;
-///
-/// let finite = from_f64(5.0);
-/// assert_eq!(Some(Finite(5.0)), finite);
-/// let infinity = from_f64(f64::INFINITY);
-/// assert_eq!(Some(Infinity), infinity);
-/// let nan = from_f64(f64::NAN);
-/// assert_eq!(None, nan);
-/// ```
+/// Equivalent to [`Infinitable::<f64>::from_float`].
 ///
 /// # Versioning
 ///
 /// Available since 1.5.0.
+#[deprecated(since = "1.6.0", note = "Use Infinitable::<f64>::from_float instead")]
 pub fn from_f64(value: f64) -> Option<Infinitable<f64>> {
-    if value.is_finite() {
-        Some(Finite(value))
-    } else if value.is_nan() {
-        None
-    } else if value.is_sign_positive() {
-        Some(Infinity)
-    } else {
-        Some(NegativeInfinity)
-    }
+    Infinitable::<f64>::from_float(value)
 }

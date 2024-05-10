@@ -275,12 +275,12 @@ fn can_convert_into() {
 
 #[test]
 fn can_convert_from_floating_point() {
-    assert_eq!(Some(Finite(1.0)), from_f32(1.0));
-    assert_eq!(Some(Infinity), from_f32(f32::INFINITY));
-    assert_eq!(Some(NegativeInfinity), from_f32(f32::NEG_INFINITY));
-    assert_eq!(None, from_f32(f32::NAN));
-    assert_eq!(Some(Finite(1.0)), from_f64(1.0));
-    assert_eq!(Some(Infinity), from_f64(f64::INFINITY));
-    assert_eq!(Some(NegativeInfinity), from_f64(f64::NEG_INFINITY));
-    assert_eq!(None, from_f64(f64::NAN));
+    assert_eq!(Some(Finite(1.0)), Infinitable::<f32>::from_float(1.0));
+    assert_eq!(Some(Infinity), Infinitable::<f32>::from_float(f32::INFINITY));
+    assert_eq!(Some(NegativeInfinity), Infinitable::<f32>::from_float(f32::NEG_INFINITY));
+    assert_eq!(None, Infinitable::<f32>::from_float(f32::NAN));
+    assert_eq!(Some(Finite(1.0)), Infinitable::<f64>::from_float(1.0));
+    assert_eq!(Some(Infinity), Infinitable::<f64>::from_float(f64::INFINITY));
+    assert_eq!(Some(NegativeInfinity), Infinitable::<f64>::from_float(f64::NEG_INFINITY));
+    assert_eq!(None, Infinitable::<f64>::from_float(f64::NAN));
 }
