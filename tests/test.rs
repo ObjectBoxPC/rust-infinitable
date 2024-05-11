@@ -231,7 +231,7 @@ fn cannot_divide_inf_by_itself() {
 #[test]
 #[should_panic(expected = "Cannot divide two infinite values")]
 fn cannot_divide_neginf_by_itself() {
-    let _ = INF / INF;
+    let _ = NEGINF / NEGINF;
 }
 
 #[test]
