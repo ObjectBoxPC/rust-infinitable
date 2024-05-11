@@ -235,6 +235,18 @@ fn cannot_divide_neginf_by_itself() {
 }
 
 #[test]
+#[should_panic(expected = "Cannot divide two infinite values")]
+fn cannot_divide_neginf_by_inf() {
+    let _ = NEGINF / INF;
+}
+
+#[test]
+#[should_panic(expected = "Cannot divide two infinite values")]
+fn cannot_divide_inf_by_neginf() {
+    let _ = INF / NEGINF;
+}
+
+#[test]
 #[should_panic(expected = "Cannot divide two zeros or unordered values")]
 fn cannot_divide_zero_by_itself() {
     let _ = ZERO / ZERO;
