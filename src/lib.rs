@@ -118,10 +118,7 @@ impl<T> Infinitable<T> {
     /// Available since 1.3.0.
     #[must_use]
     pub fn finite_or_infinity(option: Option<T>) -> Infinitable<T> {
-        match option {
-            Some(x) => Finite(x),
-            None => Infinity,
-        }
+        option.map_or(Infinity, |x| Finite(x))
     }
 
     /// Converts from [`Option<T>`] to [`Finite`] or [`NegativeInfinity`].
@@ -145,10 +142,7 @@ impl<T> Infinitable<T> {
     /// Available since 1.3.0.
     #[must_use]
     pub fn finite_or_negative_infinity(option: Option<T>) -> Infinitable<T> {
-        match option {
-            Some(x) => Finite(x),
-            None => NegativeInfinity,
-        }
+        option.map_or(NegativeInfinity, |x| Finite(x))
     }
 
     /// Converts the value into a different type, based on the conversion of the
