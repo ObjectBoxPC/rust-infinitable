@@ -741,6 +741,7 @@ where
 /// # Versioning
 ///
 /// Available since 1.5.0.
+#[must_use]
 pub fn from_f32(value: f32) -> Option<Infinitable<f32>> {
     if value.is_finite() {
         Some(Finite(value))
@@ -781,6 +782,7 @@ pub fn from_f32(value: f32) -> Option<Infinitable<f32>> {
 /// # Versioning
 ///
 /// Available since 1.5.0.
+#[must_use]
 pub fn from_f64(value: f64) -> Option<Infinitable<f64>> {
     if value.is_finite() {
         Some(Finite(value))
