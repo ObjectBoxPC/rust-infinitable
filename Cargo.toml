@@ -10,7 +10,7 @@ include = [
 	"/LICENSE.txt",
 	"/CHANGELOG.md",
 ]
-authors = ["Philip Chung <philipchung1995@yahoo.com>"]
+authors = ["Philip Chung <contact@objectboxpc.name>"]
 description = "Infinity for types without infinite values"
 repository = "https://github.com/ObjectBoxPC/rust-infinitable"
 readme = "README.md"
